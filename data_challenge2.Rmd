@@ -36,59 +36,60 @@ head(clinton.unigram.norm)
 
 ## k-means clustering with un-normalized data
 ```{r}
-k <- 6
+k <- 4
 set.seed(12345)
-k6 <- kmeans(clinton.unigram, centers = k, nstart = 3)
+kmeans.unigram <- kmeans(clinton.unigram, centers = k, nstart = 3)
 ```
 
 ## analyzing the clusters...
 ```{r}
 #Cluster assignments
-table(k6$cluster)
+table(kmeans.unigram$cluster)
 
 #Within-cluster variation
-k6$withinss
-k6$tot.withinss
+kmeans.unigram$withinss
+kmeans.unigram$tot.withinss
 ```
 ## Analyzing Clusters
 ```{r}
-clu <- 6
-centroid.i <- k6$centers[clu,]
+clu <- 3
+centroid.i <- kmeans.unigram$centers[clu,]
 sort(centroid.i, decreasing = T)[1:10]
 
-m.centroid.noti <- apply(k6$centers[-clu,], 2, mean)
+m.centroid.noti <- apply(kmeans.unigram$centers[-clu,], 2, mean)
 sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
 ```
 
 
 ## k-means clustering with normalized data
 ```{r}
-k <- 6
+k <- 4
 set.seed(12345)
 #eliminate rows with NA
 clinton.unigram.norm.omitNA <- clinton.unigram.norm[complete.cases(clinton.unigram.norm), ]
-k6_norm <- kmeans(clinton.unigram.norm.omitNA, centers = k, nstart = 3)
+kmeans.norm.unigram <- kmeans(clinton.unigram.norm.omitNA, centers = k, nstart = 3)
 ```
 
 ## analyzing the clusters...
 ```{r}
 #Cluster assignments
-table(k6_norm$cluster)
-
+table(kmeans.norm.unigram$cluster)
 #Within-cluster variation
-k6_norm$withinss
-k6_norm$tot.withinss
+kmeans.norm.unigram$withinss
+kmeans.norm.unigram$tot.withinss
 ```
 
 ## Analyzing Clusters
 ```{r}
-clu <- 5
-centroid.i <- k6_norm$centers[clu,]
+clu <- 4
+centroid.i <- kmeans.norm.unigram$centers[clu,]
 sort(centroid.i, decreasing = T)[1:10]
 
-m.centroid.noti <- apply(k6_norm$centers[-clu,], 2, mean)
+m.centroid.noti <- apply(kmeans.norm.unigram$centers[-clu,], 2, mean)
 sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
 ```
+> Normalized data is useless when applying k-means clustering due to the overly generalized words cancelling out other keywords that we might be interested in. 
+
 
 
 ## Bigram Analysis
