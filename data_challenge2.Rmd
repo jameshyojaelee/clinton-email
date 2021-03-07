@@ -1,0 +1,130 @@
+---
+title: "data_challenge2"
+author: "Maya Lu, Emaneula Beale,James Lee"
+date: "3/6/2021"
+output: html_document
+---
+## Importing data...
+```{r}
+clinton <- read.csv("Clinton.csv")
+
+neg <- unlist(read.table("negative-words.txt", stringsAsFactors = F))
+pos <- unlist(read.table("positive-words.txt", stringsAsFactors = F))
+
+```
+
+## Exploring our primary data
+```{r}
+head(clinton)
+#subset of metadata
+clinton.metadata <- clinton[1:9]
+#subset of unigrams
+clinton.unigram <- clinton[10:3009]
+#subset of bigrams
+clinton.bigram <- clinton[3010:4009]
+#subset of trigrams
+clinton.trigram <- clinton[4010:4509]
+```
+
+## Unigram Analysis
+```{r}
+#analysis of clinton unigram
+row_lengths = apply(clinton.unigram, 1, function(z) sqrt(sum(z^2)))
+clinton.unigram.norm = clinton.unigram/row_lengths
+head(clinton.unigram.norm)
+```
+
+## k-means clustering with un-normalized data
+```{r}
+k <- 6
+set.seed(12345)
+k6 <- kmeans(clinton.unigram, centers = k, nstart = 3)
+```
+
+## analyzing the clusters...
+```{r}
+#Cluster assignments
+table(k6$cluster)
+
+#Within-cluster variation
+k6$withinss
+k6$tot.withinss
+```
+## Analyzing Clusters
+```{r}
+clu <- 6
+centroid.i <- k6$centers[clu,]
+sort(centroid.i, decreasing = T)[1:10]
+
+m.centroid.noti <- apply(k6$centers[-clu,], 2, mean)
+sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
+```
+
+
+## k-means clustering with normalized data
+```{r}
+k <- 6
+set.seed(12345)
+#eliminate rows with NA
+clinton.unigram.norm.omitNA <- clinton.unigram.norm[complete.cases(clinton.unigram.norm), ]
+k6_norm <- kmeans(clinton.unigram.norm.omitNA, centers = k, nstart = 3)
+```
+
+## analyzing the clusters...
+```{r}
+#Cluster assignments
+table(k6_norm$cluster)
+
+#Within-cluster variation
+k6_norm$withinss
+k6_norm$tot.withinss
+```
+
+## Analyzing Clusters
+```{r}
+clu <- 5
+centroid.i <- k6_norm$centers[clu,]
+sort(centroid.i, decreasing = T)[1:10]
+
+m.centroid.noti <- apply(k6_norm$centers[-clu,], 2, mean)
+sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
+```
+
+
+## Bigram Analysis
+```{r}
+#analysis of clinton unigram
+row_lengths = apply(clinton.bigram, 1, function(z) sqrt(sum(z^2)))
+clinton.bigram.norm = clinton.bigram/row_lengths
+head(clinton.bigram.norm)
+```
+
+## k-means clustering with un-normalized data
+```{r}
+k <- 6
+set.seed(12345)
+k6.bigram <- kmeans(clinton.bigram, centers = k, nstart = 3)
+```
+
+## analyzing the clusters...
+```{r}
+#Cluster assignments
+table(k6.bigram$cluster)
+
+#Within-cluster variation
+k6.bigram$withinss
+k6.bigram$tot.withinss
+```
+## Analyzing Clusters
+```{r}
+clu <- 6
+centroid.i <- k6.bigram$centers[clu,]
+sort(centroid.i, decreasing = T)[1:10]
+
+m.centroid.noti <- apply(k6.bigram$centers[-clu,], 2, mean)
+sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
+```
+
+
+
+
