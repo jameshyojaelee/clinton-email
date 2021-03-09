@@ -6,6 +6,7 @@ output: html_document
 ---
 ## Importing data...
 ```{r}
+library("quanteda")
 clinton <- read.csv("Clinton.csv")
 
 neg <- unlist(read.table("negative-words.txt", stringsAsFactors = F))
@@ -26,6 +27,7 @@ clinton.bigram <- clinton[3010:4009]
 clinton.trigram <- clinton[4010:4509]
 ```
 
+
 ## Unigram Analysis
 
 ## k-means clustering with un-normalized data
@@ -36,7 +38,8 @@ kmeans.unigram <- kmeans(clinton.unigram, centers = k, nstart = 3)
 ```
 
 ## Evaluating different clustering models
-```{r}
+**WARNING: This process is optional and it will take a significant amount of time.**
+```{r eval=FALSE, include=FALSE}
 #Evaluate each clustering model by comparing their total within-cluster variations (a.k.a The Elbow Method)
 with.clu <- c()
 kmeans.unigram.list <- list()
@@ -48,8 +51,7 @@ with.clu
 ```
 > it seems that the more clusters we have, the less within-cluster variation we have (which is obvious). 
 
-
-## Analyzing Clusters
+## Analyzing Clusters (example of 4-cluster model)
 ```{r}
 clu <- 3
 centroid.i <- kmeans.unigram$centers[clu,]
@@ -85,14 +87,14 @@ kmeans.norm.unigram$tot.withinss
 
 ## Analyzing Clusters
 ```{r}
-clu <- 1
+clu <- 4
 centroid.i <- kmeans.norm.unigram$centers[clu,]
 sort(centroid.i, decreasing = T)[1:10]
 
 m.centroid.noti <- apply(kmeans.norm.unigram$centers[-clu,], 2, mean)
 sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
 ```
-> Normalized data is not very useful when applying k-means clustering to this dataset because of the overly generalized words cancelling out other keywords that we might be interested in. 
+> Normalized data is not very useful when applying k-means clustering to this type of dataset because of the overly generalized words cancelling out other keywords that we might be interested in. 
 
 
 
@@ -109,7 +111,8 @@ head(clinton.bigram.norm)
 ```{r}
 k <- 6
 set.seed(12345)
-k6.bigram <- kmeans(clinton.bigram, centers = k, nstart = 3)
+clinton.bigram.norm.NAomit <- clinton.bigram.norm[complete.cases(clinton.bigram.norm), ]
+k6.bigram <- kmeans(clinton.bigram.norm.NAomit, centers = k, nstart = 3)
 ```
 
 ## analyzing the clusters...
@@ -123,13 +126,14 @@ k6.bigram$tot.withinss
 ```
 ## Analyzing Clusters
 ```{r}
-clu <- 6
+clu <- 5
 centroid.i <- k6.bigram$centers[clu,]
 sort(centroid.i, decreasing = T)[1:10]
 
 m.centroid.noti <- apply(k6.bigram$centers[-clu,], 2, mean)
 sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
 ```
+
 
 
 
