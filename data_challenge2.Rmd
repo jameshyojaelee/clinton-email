@@ -25,6 +25,8 @@ clinton.unigram <- clinton[10:3009]
 clinton.bigram <- clinton[3010:4009]
 #subset of trigrams
 clinton.trigram <- clinton[4010:4509]
+#subset of all tokens
+clinton.all <- clinton[10:4509]
 ```
 
 
@@ -109,24 +111,24 @@ head(clinton.bigram.norm)
 
 ## k-means clustering with un-normalized data
 ```{r}
-k <- 6
+k <- 10
 set.seed(12345)
 clinton.bigram.norm.NAomit <- clinton.bigram.norm[complete.cases(clinton.bigram.norm), ]
-k6.bigram <- kmeans(clinton.bigram.norm.NAomit, centers = k, nstart = 3)
+kmeans.bigram <- kmeans(clinton.bigram.norm.NAomit, centers = k, nstart = 3)
 ```
 
 ## analyzing the clusters...
 ```{r}
 #Cluster assignments
-table(k6.bigram$cluster)
+table(kmeans.bigram$cluster)
 
 #Within-cluster variation
-k6.bigram$withinss
-k6.bigram$tot.withinss
+kmeans.bigram$withinss
+kmeans.bigram$tot.withinss
 ```
 ## Analyzing Clusters
 ```{r}
-clu <- 5
+clu <- 4
 centroid.i <- k6.bigram$centers[clu,]
 sort(centroid.i, decreasing = T)[1:10]
 
