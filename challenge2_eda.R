@@ -38,7 +38,7 @@ k10_freqWords <- data.frame(
   cluster9 = rep(NA, 10),
   cluster10 = rep(NA, 10)
 )
-  
+
 # Most frequent words
 for (i in 1:10) {
   clu <- i
@@ -283,11 +283,8 @@ calcSentimentRegression("china", emails)
 # -------------------------------------
 
 deleteColumn <- function(keyword, dat){
-  newDat <- dat[,-which(names(dat) %in% keyword)]
+  newDat <- dat[,-which(names(dat) %in% c(keyword))]
   return(newDat)
 }
 
-newDat <- deleteColumn(c("the", "for"),dtm_norm)
-
-
-
+newDat <- deleteColumn("the",dtm_norm)
