@@ -69,8 +69,8 @@ calcSentiment <- function(dat) {
 # -------------------
 # function that returns the model of sentiment analysis for a certain keyword
 calcSentimentRegression <- function(keyword, dat) {
-  countPos = rep(NA, nrow(dat))
-  countNeg = rep(NA, nrow(dat))
+  countPos = c()
+  countNeg = c()
   keyword.counts = dat[,keyword]
   
   for (i in 1:nrow(dat)) {
@@ -88,4 +88,35 @@ calcSentimentRegression <- function(keyword, dat) {
   
   return(lm(ratio ~ keyword, df))
 }
+
+
+
+# -------------------
+# function for sentiment analysis visualization
+load("processedDTM.RData")
+temp <- calcSentimentRegression("china", q5)
+temp$coefficients[[2]]
+summary(temp)$coefficients[[8]]
+
+
+coef <- c()
+
+for(i in 1:length(qdf)){
+  coef[i] <- calcSentimentRegression("libya", qdf[[i]])[[2]]
+}
+
+coef_df <- data.frame(coef)
+
+library(ggplot2)
+
+visual_by_qtr <- function(keyword, df){
+  
+  
+}
+
+ggplot(c(1,2,3,4)) + geom_point()
+
+
+
+visual_by_qtr("china", emails_clean)
 

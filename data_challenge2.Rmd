@@ -4,139 +4,84 @@ author: "Maya Lu, Emaneula Beale,James Lee"
 date: "3/6/2021"
 output: html_document
 ---
-## Importing data...
+
+## 1. SET UP
 ```{r}
-library("quanteda")
-clinton <- read.csv("Clinton.csv")
+rm(list = ls())
+library(tidyr)
+emails <- read.csv("Clinton.csv")
+table(emails$Recipient)
+
+# create normalized version of dtm
+dtm <- emails[, 10:3009]
+row_lengths = apply(dtm, 1, function(z) sqrt(sum(z^2)))
+dtm_norm <- dtm/row_lengths
+dtm_norm <- na.omit(dtm_norm)
 
 neg <- unlist(read.table("negative-words.txt", stringsAsFactors = F))
 pos <- unlist(read.table("positive-words.txt", stringsAsFactors = F))
-
-```
-
-## Exploring our primary data
-```{r}
-head(clinton)
-#subset of metadata
-clinton.metadata <- clinton[1:9]
-#subset of unigrams
-clinton.unigram <- clinton[10:3009]
-#subset of bigrams
-clinton.bigram <- clinton[3010:4009]
-#subset of trigrams
-clinton.trigram <- clinton[4010:4509]
-#subset of all tokens
-clinton.all <- clinton[10:4509]
 ```
 
 
-## Unigram Analysis
-
-## k-means clustering with un-normalized data
-```{r}
-k <- 4 
-set.seed(12345)
-kmeans.unigram <- kmeans(clinton.unigram, centers = k, nstart = 3)
-```
-
-## Evaluating different clustering models
-**WARNING: This process is optional and it will take a significant amount of time.**
-```{r eval=FALSE, include=FALSE}
-#Evaluate each clustering model by comparing their total within-cluster variations (a.k.a The Elbow Method)
-with.clu <- c()
-kmeans.unigram.list <- list()
-for(k in 1:10){
-  temp.kmeans <- kmeans(clinton.unigram, centers = k, nstart = 3)
-  with.clu[k] <- temp.kmeans$tot.withinss
-}
-with.clu
-```
-> it seems that the more clusters we have, the less within-cluster variation we have (which is obvious). 
-
-## Analyzing Clusters (example of 4-cluster model)
-```{r}
-clu <- 3
-centroid.i <- kmeans.unigram$centers[clu,]
-sort(centroid.i, decreasing = T)[1:10]
-
-m.centroid.noti <- apply(kmeans.unigram$centers[-clu,], 2, mean)
-sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
-```
-
-## Normalizing unigram data
-```{r}
-row_lengths = apply(clinton.unigram, 1, function(z) sqrt(sum(z^2)))
-clinton.unigram.norm = clinton.unigram/row_lengths
-```
-
-## k-means clustering with normalized data
-```{r}
-k <- 4
-set.seed(12345)
-#eliminate rows with NA
-clinton.unigram.norm.omitNA <- clinton.unigram.norm[complete.cases(clinton.unigram.norm), ]
-kmeans.norm.unigram <- kmeans(clinton.unigram.norm.omitNA, centers = k, nstart = 3)
-```
-
-## analyzing the clusters...
-```{r}
-#Cluster assignments
-table(kmeans.norm.unigram$cluster)
-#Within-cluster variation
-kmeans.norm.unigram$withinss
-kmeans.norm.unigram$tot.withinss
-```
-
-## Analyzing Clusters
-```{r}
-clu <- 4
-centroid.i <- kmeans.norm.unigram$centers[clu,]
-sort(centroid.i, decreasing = T)[1:10]
-
-m.centroid.noti <- apply(kmeans.norm.unigram$centers[-clu,], 2, mean)
-sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
-```
-> Normalized data is not very useful when applying k-means clustering to this type of dataset because of the overly generalized words cancelling out other keywords that we might be interested in. 
-
-
-
-## Bigram Analysis
-### we are only looking at unnoramrlized data from now on
-```{r}
-#analysis of clinton unigram
-row_lengths = apply(clinton.bigram, 1, function(z) sqrt(sum(z^2)))
-clinton.bigram.norm = clinton.bigram/row_lengths
-head(clinton.bigram.norm)
-```
-
-## k-means clustering with un-normalized data
+# 2. K-MEANS CLUSTERING
 ```{r}
 k <- 10
-set.seed(12345)
-clinton.bigram.norm.NAomit <- clinton.bigram.norm[complete.cases(clinton.bigram.norm), ]
-kmeans.bigram <- kmeans(clinton.bigram.norm.NAomit, centers = k, nstart = 3)
+k10_norm <- kmeans(dtm_norm, centers = k, nstart = 3)
+k10 <- kmeans(dtm, centers = k, nstart = 3)
+
+table(k10$cluster)
+
+# view clusters
+k10_freqWords <- data.frame(
+  cluster1 = rep(NA, 10),
+  cluster2 = rep(NA, 10),
+  cluster3 = rep(NA, 10),
+  cluster4 = rep(NA, 10),
+  cluster5 = rep(NA, 10),
+  cluster6 = rep(NA, 10),
+  cluster7 = rep(NA, 10),
+  cluster8 = rep(NA, 10),
+  cluster9 = rep(NA, 10),
+  cluster10 = rep(NA, 10)
+)
+
+# Most frequent words
+for (i in 1:10) {
+  clu <- i
+  centroid.i <- k10$centers[clu,]
+  k10_freqWords[,i] <- names(sort(centroid.i, decreasing = T)[1:10])
+}
+
+
+# Most distinct words
+k10_distWords <- data.frame(
+  cluster1 = rep(NA, 10),
+  cluster2 = rep(NA, 10),
+  cluster3 = rep(NA, 10),
+  cluster4 = rep(NA, 10),
+  cluster5 = rep(NA, 10),
+  cluster6 = rep(NA, 10),
+  cluster7 = rep(NA, 10),
+  cluster8 = rep(NA, 10),
+  cluster9 = rep(NA, 10),
+  cluster10 = rep(NA, 10)
+)
+
+
+for (i in 1:10) {
+  clu <- i
+  centroid.i <- k10$centers[clu,]
+  centroid.noti <- apply(k10$centers[-clu,], 2, mean)
+  k10_distWords[,i] <- names(sort(centroid.i - centroid.noti, decreasing = T)[1:10])
+}
+
+rm(k10, k10_distWords, k10_freqWords) #remove irrelevant variables
+
 ```
 
-## analyzing the clusters...
+
 ```{r}
-#Cluster assignments
-table(kmeans.bigram$cluster)
 
-#Within-cluster variation
-kmeans.bigram$withinss
-kmeans.bigram$tot.withinss
 ```
-## Analyzing Clusters
-```{r}
-clu <- 4
-centroid.i <- k6.bigram$centers[clu,]
-sort(centroid.i, decreasing = T)[1:10]
-
-m.centroid.noti <- apply(k6.bigram$centers[-clu,], 2, mean)
-sort(centroid.i - m.centroid.noti, decreasing = T)[1:10]
-```
-
-
-
 
 

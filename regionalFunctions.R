@@ -41,5 +41,18 @@ regionSentiment <- function(dat, region) {
 }
 
 
-
+keywordSentiment <- function(dat, keyword) {
+  # create regional df
+  idx <- which(colnames(dat) %in% keyword)
+  df <- dat[ ,idx]
+  df$total <- rowSums(df)
+  df$has_keyword <- df$total > 0
+  
+  # get index of observations w/ dataframe
+  idx <- which(df$has_keyword == 1)
+  df <- dat[idx,]
+  sent <- calcSentiment(df) #helper function to calculate sentiment of df
+  
+  return(sent)
+}
 

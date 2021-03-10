@@ -220,17 +220,136 @@ ggplot(dat = regionalSents, aes( x = c(1,2,3,4), y = asiaSents, col = "asia")) +
   geom_line(aes(y = overallSents, col = "overall"), linetype = "dashed", col = "gray") +
   xlab("year (2009-2012)") +
   ylab("Positive Sentiment Ratio") +
-  ggtitle("Sentiment Towards Regions Across Years")
-
+  ggtitle("Sentiment Towards Regions Across Years")+
+  ggtitle("Sentiment Towards Recipients Across Years")+
+  theme(plot.title = element_text(size=12, hjust = 0.5, face = "bold"), 
+        panel.background = element_rect(fill = "lightgrey", colour = "lightgrey",
+                                        size = 2, linetype = "solid"))
 
 # ----------------------
 
+# Recipient SENTIMENT OVER TIME
 
+abedin <- c("huma", "abedin")
 
+mills <- c("cheryl", "mills")
 
+sullivan <- c("jacob", "sullivan")
 
+jiloty <- c("lauren", "jiloty")
 
+# NUMBER DOCUMENTS 
+# Huma Abedin
+nAbedin <- nDocs(dtm_clean, abedin)
 
+# Cheryl Mills
+nMills <- nDocs(dtm_clean, mills) 
 
+# Jacob Sullivan
+nSullivan <- nDocs(dtm_clean, sullivan)
+
+# Lauren Jiloty
+nJiloty <- nDocs(dtm_clean, jiloty) 
+
+nRecipDocs <- c(nAbedin, nMills, nSullivan, nJiloty)
+barplot(nRecipDocs, 
+        names.arg = c("Abdein", "Mills", "Sullivan", "Jiloty"),
+        main = "Number of Documents Mentioning Each recipient")
+
+# ----------------------------------
+# VISUALIZE PROPORTION OF DOCUMENTS FOR EACH REGION ACROSS TIME
+par(mfrow = c(2, 2))
+
+# abedin
+abedinDocs2009 <- nDocs(dtm_2009, abedin)/nrow(dtm_2009)
+abedinDocs2010 <- nDocs(dtm_2010, abedin)/nrow(dtm_2010)
+abedinDocs2011 <- nDocs(dtm_2011, abedin)/nrow(dtm_2011)
+abedinDocs2012 <- nDocs(dtm_2012, abedin)/nrow(dtm_2012)
+abedinDocs <- c(abedinDocs2009, abedinDocs2010, abedinDocs2011, abedinDocs2012)
+barplot(abedinDocs,
+        names.arg = c("2009", "2010", "2011", "2012"), 
+        main = "Proportion of Documents Pertaining to Huma Abedin")
+
+# mills
+millsDocs2009 <- nDocs(dtm_2009, mills)/nrow(dtm_2009)
+millsDocs2010 <- nDocs(dtm_2010, mills)/nrow(dtm_2010)
+millsDocs2011 <- nDocs(dtm_2011, mills)/nrow(dtm_2011)
+millsDocs2012 <- nDocs(dtm_2012, mills)/nrow(dtm_2012)
+millsDocs <- c(millsDocs2009, millsDocs2010, millsDocs2011, millsDocs2012)
+barplot(millsDocs,
+        names.arg = c("2009", "2010", "2011", "2012"), 
+        main = "Proportion of Documents Pertaining to Cheryl Mills")
+
+# sullivan
+sullivanDocs2009 <- nDocs(dtm_2009, sullivan)/nrow(dtm_2009)
+sullivanDocs2010 <- nDocs(dtm_2010, sullivan)/nrow(dtm_2010)
+sullivanDocs2011 <- nDocs(dtm_2011, sullivan)/nrow(dtm_2011)
+sullivanDocs2012 <- nDocs(dtm_2012, sullivan)/nrow(dtm_2012)
+sullivanDocs <- c(sullivanDocs2009, sullivanDocs2010, sullivanDocs2011, sullivanDocs2012)
+barplot(sullivanDocs,
+        names.arg = c("2009", "2010", "2011", "2012"), 
+        main = "Proportion of Documents Pertaining to Jacob Sullivan")
+
+# jiloty
+jilotyDocs2009 <- nDocs(dtm_2009, jiloty)/nrow(dtm_2009)
+jilotyDocs2010 <- nDocs(dtm_2010, jiloty)/nrow(dtm_2010)
+jilotyDocs2011 <- nDocs(dtm_2011, jiloty)/nrow(dtm_2011)
+jilotyDocs2012 <- nDocs(dtm_2012, jiloty)/nrow(dtm_2012)
+jilotyDocs <- c(jilotyDocs2009, jilotyDocs2010, jilotyDocs2011, jilotyDocs2012)
+barplot(jilotyDocs,
+        names.arg = c("2009", "2010", "2011", "2012"), 
+        main = "Proportion of Documents Pertaining to Lauren Jiloty")
+
+# --------------------------
+
+# Abedin
+AbedinSent2009 <- keywordSentiment(dtm_2009, abedin)
+AbedinSent2010 <- keywordSentiment(dtm_2010, abedin)
+AbedinSent2011 <- keywordSentiment(dtm_2011, abedin)
+AbedinSent2012 <- keywordSentiment(dtm_2012, abedin)
+AbedinSents <- c(AbedinSent2009, AbedinSent2010, AbedinSent2011, AbedinSent2012)
+
+# Mills
+millsSent2009 <- keywordSentiment(dtm_2009, mills)
+millsSent2010 <- keywordSentiment(dtm_2010, mills)
+millsSent2011 <- keywordSentiment(dtm_2011, mills)
+millsSent2012 <- keywordSentiment(dtm_2012, mills)
+millsSents <- c(millsSent2009, millsSent2010, millsSent2011, millsSent2012)
+
+# sullivan
+sullivanSent2009 <- keywordSentiment(dtm_2009, sullivan)
+sullivanSent2010 <- keywordSentiment(dtm_2010, sullivan)
+sullivanSent2011 <- keywordSentiment(dtm_2011, sullivan)
+sullivanSent2012 <- keywordSentiment(dtm_2012, sullivan)
+sullivanSents <- c(sullivanSent2009, sullivanSent2010, sullivanSent2011, sullivanSent2012)
+
+# jiloty
+jilotySent2009 <- keywordSentiment(dtm_2009, jiloty)
+jilotySent2010 <- keywordSentiment(dtm_2010, jiloty)
+jilotySent2011 <- keywordSentiment(dtm_2011, jiloty)
+jilotySent2012 <- keywordSentiment(dtm_2012, jiloty) # NA
+jilotySent2012 <- 0.5
+jilotySents <- c(jilotySent2009, jilotySent2010, jilotySent2011, jilotySent2012)
+
+# --------------------
+
+# VISUALIZE SENTIMENT OVER TIME
+
+par(mfrow = c(1,1))
+#library(ggplot2)
+recipientSents <- data.frame(AbedinSents, millsSents, sullivanSents, jilotySents)
+
+ggplot(dat = recipientSents, aes(x = c(1,2,3,4), y = AbedinSents, col = "Huma Abedin")) + 
+  geom_line() +
+  geom_line(aes(y = millsSents, col = "Cheryl Mills")) +
+  geom_line(aes(y = sullivanSents, col = "Jacob Sullivan")) +
+  geom_line(aes(y = jilotySents, col = "Lauren Jiloty")) +
+  geom_line(aes(y = overallSents, col = "overall"), linetype = "dashed", col = "black") +
+  xlab("year (2009-2012)") +
+  ylab("Positive Sentiment Ratio") +
+  ggtitle("Sentiment Towards Recipients Across Years")+
+  theme(plot.title = element_text(size=12, hjust = 0.5, face = "bold"), 
+        panel.background = element_rect(fill = "lightgrey", colour = "lightgrey",
+                                        size = 2, linetype = "solid"))
 
 
