@@ -285,8 +285,11 @@ calcSentimentRegression("china", emails)
 # -------------------------------------
 
 deleteColumn <- function(keyword, dat){
-  newDat <- dat[,-which(names(dat) %in% c(keyword))]
+  newDat <- dat[,-which(names(dat) %in% keyword)]
   return(newDat)
 }
 
-newDat <- deleteColumn("the",dtm_norm)
+newDat <- deleteColumn(c("the", "for"),dtm_norm)
+
+
+
