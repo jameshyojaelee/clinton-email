@@ -110,10 +110,10 @@ neg <- unlist(read.table("negative-words.txt", stringsAsFactors = F))
 pos <- unlist(read.table("positive-words.txt", stringsAsFactors = F))
 
 # isolate only word vars
-dtm_2009 = dtm_2009[11:4508]
-dtm_2010 = dtm_2010[11:4508]
-dtm_2011 = dtm_2011[11:4508]
-dtm_2012 = dtm_2012[11:4508]
+dtm_2009 = dtm_2009[11:4116]
+dtm_2010 = dtm_2010[11:4116]
+dtm_2011 = dtm_2011[11:4116]
+dtm_2012 = dtm_2012[11:4116]
 
 # sentiment for all docs using for loop
 countPos2009 = rep(NA, nrow(dtm_2009))
@@ -147,10 +147,10 @@ calcSentiment <- function(dat) {
 }
 
 # overall ratio of sentiment in given year
-# overall2009sentiment = sum(countPos2009)/sum(countPos2009, countNeg2009)
-# overall2010sentiment = calcSentiment(dtm_2010)
-# overall2011sentiment = calcSentiment(dtm_2011)
-# overall2012sentiment = calcSentiment(dtm_2012)
+overall2009sentiment = calcSentiment(dtm_2009)
+overall2010sentiment = calcSentiment(dtm_2010)
+overall2011sentiment = calcSentiment(dtm_2011)
+overall2012sentiment = calcSentiment(dtm_2012)
 
 #save(overall2009sentiment, overall2010sentiment, overall2011sentiment, overall2012sentiment, file = "sentiment.Rdata")
 load(sentiment.Rdata)
@@ -197,10 +197,10 @@ clusterDistinct <- function(k, dat)  {
 }
 
 # run on all years
-# dw2009 <- clusterDistinct(10, dtm_2009)
-# dw2010 <- clusterDistinct(10, dtm_2010)
-# dw2011 <- clusterDistinct(10, dtm_2011)
-# dw2012 <- clusterDistinct(10, dtm_2012)
+dw2009 <- clusterDistinct(10, dtm_2009)
+dw2010 <- clusterDistinct(10, dtm_2010)
+dw2011 <- clusterDistinct(10, dtm_2011)
+dw2012 <- clusterDistinct(10, dtm_2012)
 
 # save data bc it takes so long to load
 #save(dw2009, dw2010, dw2011, dw2012, file = "topicsOverTime.Rdata")
@@ -279,8 +279,6 @@ calcSentimentRegression <- function(keyword, dat) {
 
 # EXAMPLE
 calcSentimentRegression("china", emails)
-
-
 
 # -------------------------------------
 
