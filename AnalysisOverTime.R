@@ -43,8 +43,8 @@ overallSents <- c(overall2009sentiment,overall2010sentiment,overall2011sentiment
 
 # REGIONAL ANALYSIS OVER TIME
 
-asia <- c("china", "southeast", "asia", "korea", "japan", "singapore", "pakistan", "india", "indonesia")
-middle_east <- c("syria", "gaza", "qatar", "turkey", "egypt", "jordan", "palestine", "saudi", "yemen", "israel", "iran", "iraq")
+asia <- c("china", "southeast", "asia", "korea", "japan", "singapore", "india", "indonesia")
+middle_east <- c("syria", "gaza", "qatar", "turkey", "egypt", "jordan", "pakistan", "palestine", "saudi", "yemen", "israel", "iran", "iraq")
 africa <- c("africa" , "kenya", "congo", "morocco", "uganda", "libya", "guinea", "sudan")
 la_carib <- c("latin","caribbean", "brazil", "colombia", "venezuela", "cuba", "mexico", "haiti", "honduras")
 europe <- c("germany", "greece", "ireland", "russia","uk","armenia",  "poland", "spain", "italy")
