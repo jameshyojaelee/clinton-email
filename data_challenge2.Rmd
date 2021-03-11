@@ -1,18 +1,20 @@
 ---
-title: "data_challenge2"
+title: "Data Challenge 2"
 author: "Maya Lu, Emaneula Beale,James Lee"
 date: "3/6/2021"
 output: html_document
 ---
 
-## 1. SET UP
+## 1. Setup
 ```{r}
 rm(list = ls())
+
 library(tidyr)
 library(ggplot2)
 library(quanteda)
+
 emails <- read.csv("Clinton.csv")
-table(emails$Recipient)
+#table(emails$Recipient)
 
 # create normalized version of dtm
 dtm <- emails[, 10:3009]
@@ -24,7 +26,7 @@ neg <- unlist(read.table("negative-words.txt", stringsAsFactors = F))
 pos <- unlist(read.table("positive-words.txt", stringsAsFactors = F))
 ```
 
-## 2. DATA PROCESSING
+## 2. Data Processing
 ```{r}
 # 1) get vector of all words in the DTM
 words <- colnames(emails)
@@ -94,7 +96,7 @@ dtm_clean <- emails_clean[-c(1:10)]
 ```
 
 
-## Building functions
+## 3. Building functions
 
 ### 1) define function to display  frequent words
 ```{r}
@@ -249,7 +251,7 @@ keywordSentiment <- function(dat, keyword) {
 ```
 
 
-## Data Analysis
+## 4. Data Analysis
 
 ### K-CLUSTERS OVER TIME
 ```{r}
@@ -312,12 +314,13 @@ nRecipDocs <- c(nAbedin, nMills, nSullivan, nJiloty)
 barplot(nRecipDocs, 
         names.arg = c("Abdein", "Mills", "Sullivan", "Jiloty"),
         main = "Number of Documents Mentioning Each recipient")
+```
 
-# ----------------------------------
-# VISUALIZE PROPORTION OF DOCUMENTS FOR EACH REGION ACROSS TIME
+### Visualize the proportion of each recipient over time
+```{r}
 par(mfrow = c(2, 2))
 
-# abedin
+# Abedin
 abedinDocs2009 <- nDocs(dtm_2009, abedin)/nrow(dtm_2009)
 abedinDocs2010 <- nDocs(dtm_2010, abedin)/nrow(dtm_2010)
 abedinDocs2011 <- nDocs(dtm_2011, abedin)/nrow(dtm_2011)
@@ -325,9 +328,9 @@ abedinDocs2012 <- nDocs(dtm_2012, abedin)/nrow(dtm_2012)
 abedinDocs <- c(abedinDocs2009, abedinDocs2010, abedinDocs2011, abedinDocs2012)
 barplot(abedinDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Huma Abedin")
+        main = "Proportion of Emails including Huma Abedin")
 
-# mills
+# Mills
 millsDocs2009 <- nDocs(dtm_2009, mills)/nrow(dtm_2009)
 millsDocs2010 <- nDocs(dtm_2010, mills)/nrow(dtm_2010)
 millsDocs2011 <- nDocs(dtm_2011, mills)/nrow(dtm_2011)
@@ -335,9 +338,9 @@ millsDocs2012 <- nDocs(dtm_2012, mills)/nrow(dtm_2012)
 millsDocs <- c(millsDocs2009, millsDocs2010, millsDocs2011, millsDocs2012)
 barplot(millsDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Cheryl Mills")
+        main = "Proportion of Emails including Cheryl Mills")
 
-# sullivan
+# Sullivan
 sullivanDocs2009 <- nDocs(dtm_2009, sullivan)/nrow(dtm_2009)
 sullivanDocs2010 <- nDocs(dtm_2010, sullivan)/nrow(dtm_2010)
 sullivanDocs2011 <- nDocs(dtm_2011, sullivan)/nrow(dtm_2011)
@@ -345,9 +348,9 @@ sullivanDocs2012 <- nDocs(dtm_2012, sullivan)/nrow(dtm_2012)
 sullivanDocs <- c(sullivanDocs2009, sullivanDocs2010, sullivanDocs2011, sullivanDocs2012)
 barplot(sullivanDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Jacob Sullivan")
+        main = "Proportion of Emails including Jacob Sullivan")
 
-# jiloty
+# Jiloty
 jilotyDocs2009 <- nDocs(dtm_2009, jiloty)/nrow(dtm_2009)
 jilotyDocs2010 <- nDocs(dtm_2010, jiloty)/nrow(dtm_2010)
 jilotyDocs2011 <- nDocs(dtm_2011, jiloty)/nrow(dtm_2011)
@@ -355,10 +358,11 @@ jilotyDocs2012 <- nDocs(dtm_2012, jiloty)/nrow(dtm_2012)
 jilotyDocs <- c(jilotyDocs2009, jilotyDocs2010, jilotyDocs2011, jilotyDocs2012)
 barplot(jilotyDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Lauren Jiloty")
+        main = "Proportion of Emails including Lauren Jiloty")
+```
 
-# --------------------------
-
+### Calcualte the sentiment ratio for each recipient over time
+```{r}
 # Abedin
 AbedinSent2009 <- keywordSentiment(dtm_2009, abedin)
 AbedinSent2010 <- keywordSentiment(dtm_2010, abedin)
@@ -387,12 +391,11 @@ jilotySent2011 <- keywordSentiment(dtm_2011, jiloty)
 jilotySent2012 <- keywordSentiment(dtm_2012, jiloty) # this turns out to be NA so set it to 0.5
 jilotySent2012 <- 0.5
 jilotySents <- c(jilotySent2009, jilotySent2010, jilotySent2011, jilotySent2012)
+```
 
-# --------------------
-
-# VISUALIZE SENTIMENT OVER TIME
+### Visualization of sentiment over time
+```{r}
 par(mfrow = c(1,1))
-#library(ggplot2)
 recipientSents <- data.frame(AbedinSents, millsSents, sullivanSents, jilotySents)
 
 ggplot(dat = recipientSents, aes(x = c(1,2,3,4), y = AbedinSents, col = "Huma Abedin")) + 
@@ -413,7 +416,6 @@ ggplot(dat = recipientSents, aes(x = c(1,2,3,4), y = AbedinSents, col = "Huma Ab
 ### Sentiment over time - by region
 ```{r}
 # REGIONAL ANALYSIS OVER TIME
-
 asia <- c("china", "southeast", "asia", "korea", "japan", "singapore", "india", "indonesia")
 middle_east <- c("syria", "gaza", "qatar", "turkey", "egypt", "jordan", "pakistan", "palestine", "saudi", "yemen", "israel", "iran", "iraq")
 africa <- c("africa" , "kenya", "congo", "morocco", "uganda", "libya", "guinea", "sudan")
@@ -443,9 +445,10 @@ nRegionDocs <- c(nAsiaDoc, nMeDoc, nAfricaDoc, nLaCaribDoc, nEuropeDoc)
 barplot(nRegionDocs, 
         names.arg = c("Asia", "Middle East", "Africa", "Latin America/Carib", "Europe"),
         main = "Number of Documents Mentioning Each Region")
+```
 
-# ----------------------------------
-# VISUALIZE PROPORTION OF DOCUMENTS FOR EACH REGION ACROSS TIME
+### VISUALIZE PROPORTION OF DOCUMENTS FOR EACH REGION ACROSS TIME
+```{r}
 par(mfrow = c(3, 2))
 
 # ASIA
@@ -456,7 +459,7 @@ asiaDocs2012 <- nDocs(dtm_2012, asia)/nrow(dtm_2012)
 asiaDocs <- c(asiaDocs2009, asiaDocs2010, asiaDocs2011, asiaDocs2012)
 barplot(asiaDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Asia")
+        main = "Proportion of Emails Pertaining to Asia")
 
 # MIDDLE EAST
 meDocs2009 <- nDocs(dtm_2009, middle_east)/nrow(dtm_2009)
@@ -466,7 +469,7 @@ meDocs2012 <- nDocs(dtm_2012, middle_east)/nrow(dtm_2012)
 meDocs <- c(meDocs2009, meDocs2010, meDocs2011, meDocs2012)
 barplot(meDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Middle East")
+        main = "Proportion of Emails Pertaining to Middle East")
 
 # AFRICA
 africaDocs2009 <- nDocs(dtm_2009, africa)/nrow(dtm_2009)
@@ -476,7 +479,7 @@ africaDocs2012 <- nDocs(dtm_2012, africa)/nrow(dtm_2012)
 africaDocs <- c(africaDocs2009, africaDocs2010, africaDocs2011, africaDocs2012)
 barplot(africaDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Africa")
+        main = "Proportion of Emails Pertaining to Africa")
 
 # LATIN AMERICA & CARIBBEAN
 laCaribDocs2009 <- nDocs(dtm_2009, la_carib)/nrow(dtm_2009)
@@ -486,7 +489,7 @@ laCaribDocs2012 <- nDocs(dtm_2012, la_carib)/nrow(dtm_2012)
 laCaribDocs <-c(laCaribDocs2009, laCaribDocs2010, laCaribDocs2011, laCaribDocs2012)
 barplot(laCaribDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Latin America/Carib")
+        main = "Proportion of Emails Pertaining to Latin America/Carib")
 
 # EUROPE
 europeDocs2009 <- nDocs(dtm_2009, europe)/nrow(dtm_2009)
@@ -496,12 +499,12 @@ europeDocs2012 <- nDocs(dtm_2012, europe)/nrow(dtm_2012)
 europeDocs <- c(europeDocs2009, europeDocs2010, europeDocs2011, europeDocs2012)
 barplot(europeDocs,
         names.arg = c("2009", "2010", "2011", "2012"), 
-        main = "Proportion of Documents Pertaining to Europe")
+        main = "Proportion of Emails Pertaining to Europe")
+```
 
-# --------------------------
 
-# REGIONAL SENTIMENT OVER TIME
-
+### REGIONAL SENTIMENT OVER TIME
+```{r}
 # ASIA
 asiaSent2009 <- regionSentiment(dtm_2009, asia)
 asiaSent2010 <- regionSentiment(dtm_2010, asia)
@@ -537,11 +540,11 @@ europeSent2010 <- regionSentiment(dtm_2010, europe)
 europeSent2011 <- regionSentiment(dtm_2011, europe)
 europeSent2012 <- regionSentiment(dtm_2012, europe)
 europeSents <- c(europeSent2009, europeSent2010, europeSent2011, europeSent2012)
+```
 
-# --------------------
 
-# VISUALIZE SENTIMENT OVER TIME
-
+### VISUALIZE SENTIMENT OVER TIME
+```{r}
 par(mfrow = c(1,1))
 regionalSents <- data.frame(asiaSents, meSents, africaSents, laCaribSents, europeSents, overallSents)
 
